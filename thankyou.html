@@ -16,7 +16,8 @@
     </p>
 
     <!-- ✅ Feedback Form -->
-    <form id="feedbackForm" action="https://formspree.io/f/mzzbqqdp" method="POST">
+     <form class="container" id="registrationForm" action="https://formsubmit.co/mubarakmehdi7@gmail.com" method="POST">
+
       <label for="feedback">💬 Share your thoughts:</label>
       <textarea
         name="feedback"
@@ -47,44 +48,37 @@
   <div id="balloons-container"></div>
   <audio id="bg-music" src="happy.mp3" autoplay loop muted playsinline></audio>
 
+
+
   <script>
-    // ✅ Enable background music when user interacts
-    document.body.addEventListener(
-      "click",
-      () => {
-        const music = document.getElementById("bg-music");
-        music.muted = false;
-        music.play();
-      },
-      { once: true }
-    );
+    const form = document.getElementById('registrationForm');
 
-    // ✅ Send form without popup or redirect
-    const form = document.getElementById("feedbackForm");
-    const statusMessage = document.getElementById("status-message");
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // prevent default page reload
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const data = new FormData(form);
+      const formData = new FormData(form);
 
       try {
         const response = await fetch(form.action, {
-          method: form.method,
-          body: data,
-          headers: { Accept: "application/json" },
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
         });
 
         if (response.ok) {
+          alert('✅ Registration successful! Check your email for confirmation.');
           form.reset();
-          statusMessage.style.display = "block";
-          setTimeout(() => (statusMessage.style.display = "none"), 3000);
         } else {
-          console.error("Form submission failed:", response.statusText);
+          alert('❌ Submission failed. Please try again.');
         }
       } catch (error) {
-        console.error("Error sending feedback:", error);
+        alert('❌ Network error. Please check your internet connection.');
       }
     });
   </script>
+
 </body>
 </html>
+
