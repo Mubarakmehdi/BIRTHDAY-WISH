@@ -4,7 +4,79 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thank You 💖</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #ffb6c1, #ffe4e1, #fff0f5);
+      text-align: center;
+      color: #333;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      max-width: 500px;
+      width: 90%;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: #ff1493;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+      font-size: 14px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+    }
+
+    .btn {
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 5px;
+      transition: 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: #ff1493;
+    }
+
+    #status-message {
+      display: none;
+      color: green;
+      margin-top: 10px;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+  </style>
 </head>
 
 <body class="thankyou-page">
@@ -15,70 +87,78 @@
       We hope you enjoyed exploring this little website made with love.
     </p>
 
-    <!-- ✅ Feedback Form -->
-     <form class="container" id="registrationForm" action="https://formsubmit.co/mubarakmehdi7@gmail.com" method="POST">
-
+    <!-- ✅ FEEDBACK FORM -->
+    <form id="feedbackForm" action="https://formspree.io/f/mzzbqqdp" method="POST">
       <label for="feedback">💬 Share your thoughts:</label>
       <textarea
-        name="feedback"
         id="feedback"
+        name="feedback"
         placeholder="Write your feedback here..."
         required
       ></textarea>
 
-      <!-- hidden email field -->
+      <!-- Hidden Fields -->
       <input type="hidden" name="_replyto" value="mubarakmehdi7@gmail.com" />
+      <input type="hidden" name="_subject" value="New Feedback from Thank You Page" />
+      <input type="hidden" name="_captcha" value="false" />
 
       <button type="submit" class="btn">Send Feedback</button>
-
-      <!-- thank you message -->
-      <p id="status-message" style="margin-top:10px; color:green; display:none;">
-        ✅ Thank you for your feedback!
-      </p>
+      <p id="status-message">✅ Thank you! Your feedback has been sent successfully.</p>
     </form>
 
-    <!-- Navigation Buttons -->
     <div class="nav-buttons">
       <a href="album.html" class="btn">⬅ Back to Album</a>
       <a href="index.html" class="btn">🏠 Home</a>
     </div>
   </div>
 
-  <!-- Balloons and Music -->
   <div id="balloons-container"></div>
   <audio id="bg-music" src="happy.mp3" autoplay loop muted playsinline></audio>
 
-
-
   <script>
-    const form = document.getElementById('registrationForm');
+    // 🎵 Background music unmute on first click
+    document.body.addEventListener(
+      "click",
+      () => {
+        const music = document.getElementById("bg-music");
+        music.muted = false;
+        music.play();
+      },
+      { once: true }
+    );
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault(); // prevent default page reload
+    // ✅ Feedback Form Submit Without Redirect or Popup
+    const form = document.getElementById("feedbackForm");
+    const statusMessage = document.getElementById("status-message");
 
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault(); // stop reload
       const formData = new FormData(form);
 
       try {
         const response = await fetch(form.action, {
-          method: 'POST',
+          method: "POST",
           body: formData,
-          headers: {
-            'Accept': 'application/json'
-          }
+          headers: { Accept: "application/json" },
         });
 
         if (response.ok) {
-          alert('✅ Registration successful! Check your email for confirmation.');
           form.reset();
+          statusMessage.style.display = "block";
+          setTimeout(() => (statusMessage.style.opacity = "1"), 50);
+
+          // hide after 3 seconds
+          setTimeout(() => {
+            statusMessage.style.opacity = "0";
+            setTimeout(() => (statusMessage.style.display = "none"), 500);
+          }, 3000);
         } else {
-          alert('❌ Submission failed. Please try again.');
+          console.error("Form submission failed:", response.statusText);
         }
       } catch (error) {
-        alert('❌ Network error. Please check your internet connection.');
+        console.error("Error sending feedback:", error);
       }
     });
   </script>
-
 </body>
 </html>
-
